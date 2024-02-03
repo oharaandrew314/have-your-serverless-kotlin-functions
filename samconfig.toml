@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "posts"
+resolve_s3 = true
+s3_prefix = "posts"
+region = "ca-central-1"
+profile = "personal"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
