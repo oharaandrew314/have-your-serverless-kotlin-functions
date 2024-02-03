@@ -1,0 +1,45 @@
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: java17
+    MemorySize: 2048
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref Posts
+
+Resources:
+  ApiHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 10
+      Handler: dev.aohara.posts.SpringLambdaHandler
+      Architectures: [arm64]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Posts
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+
+  Posts:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: authorId
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: authorId
+          KeySchema:
+            - AttributeName: authorId
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
