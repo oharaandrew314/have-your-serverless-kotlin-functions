@@ -13,7 +13,10 @@ import org.springframework.boot.builder.SpringApplicationBuilder
 class PostsApp
 
 class SpringLambdaHandler : RequestHandler<HttpApiV2ProxyRequest?, AwsProxyResponse?> {
-    private val handler = SpringBootLambdaContainerHandler.getHttpApiV2ProxyHandler(PostsApp::class.java, "main")
+
+    companion object {
+        private val handler = SpringBootLambdaContainerHandler.getHttpApiV2ProxyHandler(PostsApp::class.java, "main")
+    }
 
     override fun handleRequest(input: HttpApiV2ProxyRequest?, context: Context?): AwsProxyResponse? {
         return handler.proxy(input, context)
