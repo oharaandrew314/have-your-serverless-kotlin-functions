@@ -11,9 +11,13 @@ repositories {
 
 dependencies {
     implementation(kotlin("reflect"))
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+    }
     implementation("com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.0.0")
     implementation("com.github.derjust:spring-data-dynamodb:5.1.0")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
 tasks.test {
