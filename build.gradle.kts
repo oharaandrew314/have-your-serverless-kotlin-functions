@@ -15,7 +15,7 @@ dependencies {
         exclude("org.springframework.boot", "spring-boot-starter-tomcat")
     }
     implementation("com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.0.0")
-    implementation("com.github.derjust:spring-data-dynamodb:5.1.0")
+    implementation("org.http4k:http4k-connect-amazon-dynamodb:5.6.11.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-tomcat")
 }

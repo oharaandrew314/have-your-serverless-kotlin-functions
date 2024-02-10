@@ -10,22 +10,22 @@ class PostsController(@Autowired private val posts: PostsRepo) {
 
     @GetMapping("/posts/{postId}")
     fun getPost(@PathVariable postId: String): ResponseEntity<Post> {
-        return posts.findById(postId)
-            .map {  ResponseEntity.ok(it) }
-            .orElseGet { ResponseEntity.notFound().build() }
+        return posts[postId]
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
     }
 
     @DeleteMapping("/posts/{postId}")
     fun deletePost(@PathVariable postId: String): ResponseEntity<Post> {
-        return posts.findById(postId).map { post ->
-            posts.deleteById(postId)
-            ResponseEntity.ok(post)
-        }.orElseGet { ResponseEntity.notFound().build() }
+        return posts[postId]
+            ?.also { posts.delete(postId) }
+            ?.let {  ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
     }
 
     @GetMapping("/posts")
     fun listPosts(): ResponseEntity<List<Post>> {
-        val results = posts.findAll().toList()
+        val results = posts.primaryIndex().scan().toList()
         return ResponseEntity.ok(results)
     }
 
