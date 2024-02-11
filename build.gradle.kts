@@ -3,6 +3,7 @@ import io.micronaut.gradle.MicronautRuntime
 plugins {
     kotlin("jvm") version "1.9.22"
     id("io.micronaut.minimal.library") version "4.3.2"
+    id("io.micronaut.aot") version "4.3.2"
     id("com.google.devtools.ksp") version "1.9.22-1.0.17"
 }
 
@@ -16,6 +17,11 @@ micronaut {
     processing {
         incremental = false
         annotations("dev.aohara.posts.*")
+    }
+    aot {
+        optimizeClassLoading = true
+        optimizeServiceLoading = true
+        precomputeOperations = true
     }
 }
 
@@ -38,5 +44,5 @@ tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
