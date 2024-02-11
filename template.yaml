@@ -7,21 +7,23 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref Posts
-        JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
 
 Resources:
   ApiHandler:
     Type: AWS::Serverless::Function
     Properties:
-      Timeout: 10
+      Timeout: 13
       Handler: dev.aohara.posts.LambdaHandler
-      Architectures: [arm64]
+      Architectures: [x86_64]
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Posts
       Events:
         HttpApiEvent:
           Type: HttpApi
+      SnapStart:
+        ApplyOn: PublishedVersions
+      AutoPublishAlias: SnapStart
 
   Posts:
     Type: AWS::DynamoDB::Table
