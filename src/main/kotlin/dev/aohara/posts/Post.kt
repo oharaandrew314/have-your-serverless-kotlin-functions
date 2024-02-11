@@ -1,13 +1,13 @@
 package dev.aohara.posts
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
+import io.micronaut.serde.annotation.Serdeable
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
 
-@DynamoDBTable(tableName = "posts")
+@Serdeable
+@DynamoDbBean
 data class Post(
-    @DynamoDBHashKey
+    @get:DynamoDbPartitionKey
     var id: String? = null,
 
     var title: String? = null,

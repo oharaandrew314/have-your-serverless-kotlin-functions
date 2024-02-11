@@ -1,42 +1,32 @@
 package dev.aohara.posts
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import jakarta.inject.Inject
 import java.util.*
 
-@RestController
-class PostsController(@Autowired private val posts: PostsRepo) {
+@Controller("/posts")
+class PostsController(@Inject private val posts: PostsRepo) {
 
-    @GetMapping("/posts/{postId}")
-    fun getPost(@PathVariable postId: String): ResponseEntity<Post> {
-        return posts.findById(postId)
-            .map {  ResponseEntity.ok(it) }
-            .orElseGet { ResponseEntity.notFound().build() }
-    }
+    @Get("/{postId}")
+    fun getPost(postId: String) = posts.get(postId)
 
-    @DeleteMapping("/posts/{postId}")
-    fun deletePost(@PathVariable postId: String): ResponseEntity<Post> {
-        return posts.findById(postId).map { post ->
-            posts.deleteById(postId)
-            ResponseEntity.ok(post)
-        }.orElseGet { ResponseEntity.notFound().build() }
-    }
+    @Delete("/{postId}")
+    fun deletePost(postId: String) = posts.delete(postId)
 
-    @GetMapping("/posts")
-    fun listPosts(): ResponseEntity<List<Post>> {
-        val results = posts.findAll().toList()
-        return ResponseEntity.ok(results)
-    }
+    @Get
+    fun listPosts() = posts.list()
 
-    @PostMapping("/posts")
-    fun createPost(@RequestBody data: PostData): ResponseEntity<Post> {
+    @io.micronaut.http.annotation.Post
+    fun createPost(@Body data: PostData): Post {
         val post = Post(
             id = UUID.randomUUID().toString(),
             title = data.title,
             content = data.content
         )
         posts.save(post)
-        return ResponseEntity.ok(post)
+        return post
     }
 }

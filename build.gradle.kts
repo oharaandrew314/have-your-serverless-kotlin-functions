@@ -1,19 +1,37 @@
+import io.micronaut.gradle.MicronautRuntime
+
 plugins {
     kotlin("jvm") version "1.9.22"
-    kotlin("plugin.spring") version "1.9.22"
-    id("org.springframework.boot") version "3.2.2"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("io.micronaut.minimal.library") version "4.3.2"
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
 }
 
 repositories {
     mavenCentral()
 }
 
+micronaut {
+    version = "4.0.2"
+    runtime = MicronautRuntime.LAMBDA_JAVA
+    processing {
+        incremental = false
+        annotations("dev.aohara.posts.*")
+    }
+}
+
 dependencies {
-    implementation(kotlin("reflect"))
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.0.0")
-    implementation("com.github.derjust:spring-data-dynamodb:5.1.0")
+    ksp("io.micronaut.serde:micronaut-serde-processor")
+
+    implementation("software.amazon.awssdk:dynamodb-enhanced:2.24.0")
+    implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
+    implementation("io.micronaut.aws:micronaut-aws-lambda-events-serde")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+
+    runtimeOnly("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    testRuntimeOnly("io.micronaut:micronaut-http-server-netty")
 }
 
 tasks.test {
