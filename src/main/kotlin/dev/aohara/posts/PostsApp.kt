@@ -1,5 +1,6 @@
 package dev.aohara.posts
 
+import org.http4k.client.Java8HttpClient
 import org.http4k.connect.amazon.dynamodb.DynamoDb
 import org.http4k.connect.amazon.dynamodb.Http
 import org.http4k.connect.amazon.dynamodb.model.TableName
@@ -22,7 +23,7 @@ private val logFilter = Filter { next ->
 
 class LambdaHandler : ApiGatewayV2LambdaFunction(AppLoader { envMap ->
     val posts = postsRepo(
-        dynamoDb = DynamoDb.Http(),
+        dynamoDb = DynamoDb.Http(http = Java8HttpClient()),
         tableName = TableName.of(envMap["TABLE_NAME"]!!)
     )
 
@@ -32,7 +33,7 @@ class LambdaHandler : ApiGatewayV2LambdaFunction(AppLoader { envMap ->
 
 fun main() {
     val posts = postsRepo(
-        dynamoDb = DynamoDb.Http(),
+        dynamoDb = DynamoDb.Http(http = Java8HttpClient()),
         tableName = TableName.of(System.getenv("TABLE_NAME"))
     )
 
