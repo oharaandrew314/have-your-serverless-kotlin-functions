@@ -1,8 +1,10 @@
 package dev.aohara.posts
 
+// PostsRepo.kt
+
 import io.micronaut.context.annotation.Value
 import jakarta.inject.Singleton
-import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider
+import software.amazon.awssdk.auth.credentials.ContainerCredentialsProvider
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema
@@ -17,11 +19,12 @@ class PostsRepo(@Value("\${TABLE_NAME}") tableName: String) {
             DynamoDbClient
                 .builder()
                 .httpClient(UrlConnectionHttpClient.create())
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                .credentialsProvider(ContainerCredentialsProvider.builder().build())
                 .build()
         )
         .build()
         .table(tableName, BeanTableSchema.create(Post::class.java))
+//        .also { println("foo") }
 
     fun list(): List<Post> = table.scan().flatMap { it.items() }
 
