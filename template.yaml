@@ -7,6 +7,7 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref Posts
+        JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
 
 Resources:
   ApiHandler:
