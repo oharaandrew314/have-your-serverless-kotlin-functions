@@ -10,6 +10,7 @@ typealias PostsRepo = DynamoDbTableMapper<Post, String, Unit>
 
 fun postsRepo(dynamoDb: DynamoDb, tableName: TableName): PostsRepo = dynamoDb.tableMapper(
     tableName = tableName,
-    hashKeyAttribute = Attribute.string().required("id")
+    hashKeyAttribute = Attribute.string().required("id"),
+    autoMarshalling = kotshi
 )
 
