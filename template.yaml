@@ -14,16 +14,13 @@ Resources:
     Properties:
       Timeout: 10
       Handler: dev.aohara.posts.LambdaHandler
-      Architectures: [x86_64]
+      Architectures: [arm64]
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Posts
       Events:
         HttpApiEvent:
           Type: HttpApi
-      SnapStart:
-        ApplyOn: PublishedVersions
-      AutoPublishAlias: SnapStart
 
   Posts:
     Type: AWS::DynamoDB::Table
