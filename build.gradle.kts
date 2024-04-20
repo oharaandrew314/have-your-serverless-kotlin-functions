@@ -28,7 +28,11 @@ micronaut {
 dependencies {
     ksp("io.micronaut.serde:micronaut-serde-processor")
 
-    implementation("software.amazon.awssdk:dynamodb-enhanced:2.24.0")
+    implementation("software.amazon.awssdk:dynamodb-enhanced:2.24.0") {
+        exclude("software.amazon.awssdk", "apache-client")
+        exclude("software.amazon.awssdk", "netty-nio-client")
+    }
+    implementation("software.amazon.awssdk:url-connection-client:2.24.0")
     implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
     implementation("io.micronaut.aws:micronaut-aws-lambda-events-serde")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
