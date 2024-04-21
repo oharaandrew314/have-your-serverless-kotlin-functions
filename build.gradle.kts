@@ -33,7 +33,7 @@ dependencies {
         exclude("software.amazon.awssdk", "netty-nio-client")
     }
     implementation("software.amazon.awssdk:url-connection-client:2.24.0")
-    implementation("io.micronaut.aws:micronaut-function-aws-api-proxy") {
+    runtimeOnly("io.micronaut.aws:micronaut-function-aws-api-proxy") {
         exclude("io.micronaut", "micronaut-http-netty")
     }
     implementation("io.micronaut.aws:micronaut-aws-lambda-events-serde")

@@ -13,7 +13,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 10
-      Handler: dev.aohara.posts.LambdaHandler
+      Handler: io.micronaut.function.aws.proxy.payload2.APIGatewayV2HTTPEventFunction
       Architectures: [x86_64]
       Policies:
         - DynamoDBCrudPolicy:
