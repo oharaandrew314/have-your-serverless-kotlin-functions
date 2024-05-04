@@ -1,10 +1,13 @@
 package dev.aohara.posts
 
-import se.ansman.kotshi.JsonSerializable
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
 
-@JsonSerializable
+@DynamoDbBean
 data class Post(
-    val id: String,
-    val title: String,
-    val content: String
+    @get:DynamoDbPartitionKey
+    var id: String? = null,
+
+    var title: String? = null,
+    var content: String? = null,
 )

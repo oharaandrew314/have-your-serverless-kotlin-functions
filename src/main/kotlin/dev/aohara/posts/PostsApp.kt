@@ -1,9 +1,5 @@
 package dev.aohara.posts
 
-import org.http4k.client.Java8HttpClient
-import org.http4k.connect.amazon.dynamodb.DynamoDb
-import org.http4k.connect.amazon.dynamodb.Http
-import org.http4k.connect.amazon.dynamodb.model.TableName
 import org.http4k.core.Filter
 import org.http4k.core.then
 import org.http4k.server.SunHttp
@@ -11,6 +7,7 @@ import org.http4k.server.asServer
 import org.http4k.serverless.ApiGatewayV2LambdaFunction
 import org.http4k.serverless.AppLoader
 import org.slf4j.LoggerFactory
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 
 private val logger = LoggerFactory.getLogger("root")
 private val logFilter = Filter { next ->
@@ -22,9 +19,9 @@ private val logFilter = Filter { next ->
 }
 
 class LambdaHandler : ApiGatewayV2LambdaFunction(AppLoader { envMap ->
-    val posts = postsRepo(
-        dynamoDb = DynamoDb.Http(http = Java8HttpClient()),
-        tableName = TableName.of(envMap["TABLE_NAME"]!!)
+    val posts = PostsRepo(
+        dynamoDb = DynamoDbEnhancedClient.create(),
+        tableName = envMap["TABLE_NAME"]!!
     )
 
     logFilter
@@ -32,9 +29,9 @@ class LambdaHandler : ApiGatewayV2LambdaFunction(AppLoader { envMap ->
 })
 
 fun main() {
-    val posts = postsRepo(
-        dynamoDb = DynamoDb.Http(http = Java8HttpClient()),
-        tableName = TableName.of(System.getenv("TABLE_NAME"))
+    val posts = PostsRepo(
+        dynamoDb = DynamoDbEnhancedClient.create(),
+        tableName = System.getenv("TABLE_NAME")
     )
 
     logFilter
