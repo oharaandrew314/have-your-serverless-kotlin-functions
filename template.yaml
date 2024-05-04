@@ -13,17 +13,18 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 13
-      Handler: dev.aohara.posts.LambdaHandler
-      Architectures: [x86_64]
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      CodeUri: build/function.zip
+      Architectures: [arm64]
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Posts
       Events:
         HttpApiEvent:
           Type: HttpApi
-      SnapStart:
-        ApplyOn: PublishedVersions
-      AutoPublishAlias: SnapStart
+#      SnapStart:
+#        ApplyOn: PublishedVersions
+#      AutoPublishAlias: SnapStart
 
   Posts:
     Type: AWS::DynamoDB::Table

@@ -13,7 +13,8 @@ dependencies {
 
     implementation("io.quarkus:quarkus-rest-jackson")
     implementation("io.quarkiverse.amazonservices:quarkus-amazon-dynamodb-enhanced")
-    runtimeOnly("software.amazon.awssdk:url-connection-client")  // quarkus gets upset if this isn't available
+    runtimeOnly("software.amazon.awssdk:url-connection-client")  // required by quarkus
+    runtimeOnly("io.quarkus:quarkus-amazon-lambda-http")
 }
 
 tasks.test {

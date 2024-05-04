@@ -8,7 +8,6 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema
 
 @ApplicationScoped
 class PostsRepo(client: DynamoDbEnhancedClient, @ConfigProperty(name = "TABLE_NAME") tableName: String) {
-//class PostsRepo(@ConfigProperty(name = "TABLE_NAME") tableName: String) {
 
     private val table = client.table(tableName, BeanTableSchema.create(Post::class.java))
 
