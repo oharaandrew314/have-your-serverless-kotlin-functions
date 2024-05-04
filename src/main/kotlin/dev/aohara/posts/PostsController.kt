@@ -1,49 +1,34 @@
 package dev.aohara.posts
 
-import org.http4k.core.Method.GET
-import org.http4k.core.Method.DELETE
-import org.http4k.core.Method.POST
-import org.http4k.core.Response
-import org.http4k.core.Status.Companion.NOT_FOUND
-import org.http4k.core.Status.Companion.OK
-import org.http4k.core.with
-import org.http4k.lens.Path
-import org.http4k.lens.string
-import org.http4k.routing.bind
-import org.http4k.routing.routes
-import java.util.UUID
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.DELETE
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
+import java.util.*
 
-private val postIdLens = Path.string().of("post_id")
+@Path("/posts")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+class PostsController(private val repo: PostsRepo) {
 
-val postLens = kotshi.autoBody<Post>().toLens()
-val postListLens = kotshi.autoBody<List<Post>>().toLens()
-val postDataLens = kotshi.autoBody<PostData>().toLens()
+    @GET
+    fun list() = repo.list()
 
-fun postsController(posts: PostsRepo) = routes(
-    "/posts/$postIdLens" bind GET to { request ->
-        posts[postIdLens(request)]
-            ?.let { Response(OK).with(postLens of it) }
-            ?: Response(NOT_FOUND)
-    },
-    "/posts/$postIdLens" bind DELETE to { request ->
-        val postId = postIdLens(request)
-        posts[postId]
-            ?.also { posts.delete(postId) }
-            ?.let { Response(OK).with(postLens of it) }
-            ?: Response(NOT_FOUND)
-    },
-    "/posts" bind GET to {
-        val results = posts.primaryIndex().scan().toList()
-        Response(OK).with(postListLens of results)
-    },
-    "/posts" bind POST to { request ->
-        val data = postDataLens(request)
-        val post = Post(
-            id = UUID.randomUUID().toString(),
-            title = data.title,
-            content = data.content
-        )
-        posts.save(post)
-        Response(OK).with(postLens of post)
-    }
-)
+    @GET
+    @Path("{id}")
+    fun get(id: String) = repo.get(id)
+
+    @DELETE
+    @Path("{id}")
+    fun delete(id: String) = repo.delete(id)
+
+    @POST
+    fun create(data: PostData) = Post(
+        id = UUID.randomUUID().toString(),
+        title = data.title,
+        content = data.content
+    ).also(repo::save)
+}

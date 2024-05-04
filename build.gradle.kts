@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("io.quarkus") version "3.10.0"
 }
 
 repositories {
@@ -8,16 +8,18 @@ repositories {
 }
 
 dependencies {
-    implementation("org.http4k:http4k-connect-amazon-dynamodb:5.6.11.0")
-    implementation("org.http4k:http4k-serverless-lambda:5.13.6.0")
-    implementation("org.slf4j:slf4j-simple:2.0.11")
-    implementation("se.ansman.kotshi:api:2.15.0")
-    ksp("se.ansman.kotshi:compiler:2.15.0")
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-amazon-services-bom:3.10.0"))
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:3.10.0"))
+
+    implementation("io.quarkus:quarkus-rest-jackson")
+    implementation("io.quarkiverse.amazonservices:quarkus-amazon-dynamodb-enhanced")
+    runtimeOnly("software.amazon.awssdk:url-connection-client")  // quarkus gets upset if this isn't available
 }
 
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(21)
 }
