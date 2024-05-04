@@ -1,13 +1,10 @@
 package dev.aohara.posts
 
-import jakarta.enterprise.context.ApplicationScoped
-import org.eclipse.microprofile.config.inject.ConfigProperty
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema
 
-@ApplicationScoped
-class PostsRepo(client: DynamoDbEnhancedClient, @ConfigProperty(name = "TABLE_NAME") tableName: String) {
+class PostsRepo(client: DynamoDbEnhancedClient, tableName: String) {
 
     private val table = client.table(tableName, BeanTableSchema.create(Post::class.java))
 

@@ -1,34 +1,74 @@
 package dev.aohara.posts
 
-import jakarta.ws.rs.Consumes
-import jakarta.ws.rs.DELETE
-import jakarta.ws.rs.GET
-import jakarta.ws.rs.POST
-import jakarta.ws.rs.Path
-import jakarta.ws.rs.Produces
-import jakarta.ws.rs.core.MediaType
+import io.vertx.core.http.HttpMethod
+import io.vertx.ext.web.Router
+import io.vertx.kotlin.core.json.Json
+import io.vertx.kotlin.core.json.array
+import io.vertx.kotlin.core.json.json
+import io.vertx.kotlin.core.json.obj
 import java.util.*
 
-@Path("/posts")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-class PostsController(private val repo: PostsRepo) {
+private fun Json.jsonOf(post: Post) = obj(
+    "id" to post.id,
+    "title" to post.title,
+    "content" to post.content
+)
 
-    @GET
-    fun list() = repo.list()
+fun Router.postsController(posts: PostsRepo) {
+    // list
+    route("/posts").handler { context ->
+        val result = posts.list()
+        context.json(
+            json {
+                array(result.map { jsonOf(it) })
+            }
+        )
+    }
 
-    @GET
-    @Path("{id}")
-    fun get(id: String) = repo.get(id)
+    // get
+    route("/posts/:id").handler { context ->
+        val id = context.pathParam("id")
+        val post = posts.get(id)
+        if (post == null) {
+            context.response().setStatusCode(404)
+        } else {
+            context.json(
+                json {
+                    jsonOf(post)
+                }
+            )
+        }
+    }
 
-    @DELETE
-    @Path("{id}")
-    fun delete(id: String) = repo.delete(id)
+    // delete
+    route(HttpMethod.DELETE, "/posts/:id").handler { context ->
+        val id = context.pathParam("id")
+        val post = posts.delete(id)
 
-    @POST
-    fun create(data: PostData) = Post(
-        id = UUID.randomUUID().toString(),
-        title = data.title,
-        content = data.content
-    ).also(repo::save)
+        if (post == null) {
+            context.response().setStatusCode(404)
+        } else {
+            context.json(
+                json {
+                    jsonOf(post)
+                }
+            )
+        }
+    }
+
+    // create
+    route(HttpMethod.POST, "/posts").handler { context ->
+        val data = context.body().asJsonObject()
+        val post = Post(
+            id = UUID.randomUUID().toString(),
+            title = data.getString("title"),
+            content = data.getString("content")
+        ).also(posts::save)
+
+        context.json(
+            json {
+                jsonOf(post)
+            }
+        )
+    }
 }
