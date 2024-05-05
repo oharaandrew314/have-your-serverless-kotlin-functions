@@ -1,36 +1,52 @@
 package dev.aohara.posts
 
-// PostsRepo.kt
-
 import io.micronaut.context.annotation.Value
 import jakarta.inject.Singleton
-import software.amazon.awssdk.auth.credentials.ContainerCredentialsProvider
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
-import software.amazon.awssdk.enhanced.dynamodb.Key
-import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue
+import software.amazon.awssdk.services.dynamodb.model.ReturnValue
 
 @Singleton
-class PostsRepo(@Value("\${TABLE_NAME}") tableName: String) {
-    private val table = DynamoDbEnhancedClient
+class PostsRepo(@Value("\${TABLE_NAME}") private val tableName: String) {
+    private val client = DynamoDbClient
         .builder()
-        .dynamoDbClient(
-            DynamoDbClient
-                .builder()
-                .httpClient(UrlConnectionHttpClient.create())
-                .credentialsProvider(ContainerCredentialsProvider.builder().build())
-                .build()
-        )
+        .httpClient(UrlConnectionHttpClient.create())
+        .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
         .build()
-        .table(tableName, BeanTableSchema.create(Post::class.java))
-//        .also { println("foo") }
 
-    fun list(): List<Post> = table.scan().flatMap { it.items() }
+    fun list() = client.scan {
+        it.tableName(tableName)
+    }
+        .items()
+        .map { it.toPost() }
 
-    fun save(post: Post): Unit = table.putItem(post)
+    fun save(post: Post) {
+        client.putItem {
+            it.tableName(tableName)
+            it.item(mapOf(
+                "id" to AttributeValue.fromS(post.id),
+                "title" to AttributeValue.fromS(post.title),
+                "content" to AttributeValue.fromS(post.content)
+            ))
+        }
+    }
 
-    fun get(id: String): Post? = table.getItem(Key.builder().partitionValue(id).build())
+    fun get(id: String) = client.getItem {
+        it.tableName(tableName)
+        it.key(mapOf("id" to AttributeValue.fromS(id)))
+    }.item()?.toPost()
 
-    fun delete(id: String): Post? = table.deleteItem(Key.builder().partitionValue(id).build())
+    fun delete(id: String) = client.deleteItem {
+        it.tableName(tableName)
+        it.key(mapOf("id" to AttributeValue.fromS(id)))
+        it.returnValues(ReturnValue.ALL_OLD)
+    }.attributes()?.toPost()
 }
+
+private fun Map<String, AttributeValue>.toPost() = Post(
+    id = get("id")!!.s(),
+    title = get("title")!!.s(),
+    content = get("content")!!.s()
+)

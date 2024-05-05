@@ -2,7 +2,7 @@ Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Runtime: java21
+    Runtime: provided.al2
     MemorySize: 2048
     Environment:
       Variables:
@@ -13,7 +13,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 10
-      Handler: io.micronaut.function.aws.proxy.payload2.APIGatewayV2HTTPEventFunction
+      Handler: unused
+      CodeUri: build/libs/have_your_serverless_functions-unspecified-lambda.zip
       Architectures: [x86_64]
       Policies:
         - DynamoDBCrudPolicy:
@@ -21,9 +22,11 @@ Resources:
       Events:
         HttpApiEvent:
           Type: HttpApi
-      SnapStart:
-        ApplyOn: PublishedVersions
-      AutoPublishAlias: SnapStart
+        RestApiEvent:
+          Type: Api
+          Properties:
+            Method: ANY
+            Path: '/{proxy+}'
 
   Posts:
     Type: AWS::DynamoDB::Table
