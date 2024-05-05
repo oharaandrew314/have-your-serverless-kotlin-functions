@@ -24,3 +24,5 @@ tasks.test {
 kotlin {
     jvmToolchain(21)
 }
+
+// gradle build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false -Dquarkus.native.container-build=true

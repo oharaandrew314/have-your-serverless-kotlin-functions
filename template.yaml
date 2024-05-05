@@ -2,7 +2,7 @@ Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Runtime: java21
+    Runtime: provided.al2023
     MemorySize: 2048
     Environment:
       Variables:
@@ -13,7 +13,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 13
-      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Handler: unused
       CodeUri: build/function.zip
       Architectures: [x86_64]
       Policies:
@@ -22,9 +22,6 @@ Resources:
       Events:
         HttpApiEvent:
           Type: HttpApi
-      SnapStart:
-        ApplyOn: PublishedVersions
-      AutoPublishAlias: SnapStart
 
   Posts:
     Type: AWS::DynamoDB::Table
