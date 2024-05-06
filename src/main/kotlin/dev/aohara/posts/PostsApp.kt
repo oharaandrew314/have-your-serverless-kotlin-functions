@@ -1,13 +1,14 @@
 package dev.aohara.posts
 
 import org.http4k.core.Filter
+import org.http4k.core.HttpHandler
 import org.http4k.core.then
 import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 import org.http4k.serverless.ApiGatewayV2LambdaFunction
-import org.http4k.serverless.AppLoader
 import org.slf4j.LoggerFactory
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 private val logger = LoggerFactory.getLogger("root")
 private val logFilter = Filter { next ->
@@ -18,24 +19,26 @@ private val logFilter = Filter { next ->
     }
 }
 
-class LambdaHandler : ApiGatewayV2LambdaFunction(AppLoader { envMap ->
+fun createApp(envMap: Map<String, String>): HttpHandler {
+    val dynamo = DynamoDbClient.builder()
+        .build()
+        .let { DynamoDbEnhancedClient.builder().dynamoDbClient(it).build() }
+
     val posts = PostsRepo(
-        dynamoDb = DynamoDbEnhancedClient.create(),
+        dynamoDb = dynamo,
         tableName = envMap["TABLE_NAME"]!!
     )
 
-    logFilter
-        .then(postsController(posts))
-})
+    return logFilter.then(postsController(posts))
+}
+
+class LambdaHandler : ApiGatewayV2LambdaFunction(::createApp)
 
 fun main() {
-    val posts = PostsRepo(
-        dynamoDb = DynamoDbEnhancedClient.create(),
-        tableName = System.getenv("TABLE_NAME")
-    )
+    val app = createApp(System.getenv())
 
     logFilter
-        .then(postsController(posts))
+        .then(app)
         .asServer(SunHttp(8080))
         .start()
         .also { logger.info("Server started on http://localhost:${it.port()}") }
