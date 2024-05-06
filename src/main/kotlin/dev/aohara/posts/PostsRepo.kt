@@ -1,19 +1,42 @@
 package dev.aohara.posts
 
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
-import software.amazon.awssdk.enhanced.dynamodb.Key
-import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue
+import software.amazon.awssdk.services.dynamodb.model.ReturnValue
 
-class PostsRepo(dynamoDb: DynamoDbEnhancedClient, tableName: String) {
+class PostsRepo(private val client: DynamoDbClient, private val tableName: String) {
 
-    private val table = dynamoDb.table(tableName, BeanTableSchema.create(Post::class.java))
+    fun list() = client.scan {
+        it.tableName(tableName)
+    }
+        .items()
+        .map { it.toPost() }
 
-    fun list(): List<Post> = table.scan().flatMap { it.items() }
+    fun save(post: Post) {
+        client.putItem {
+            it.tableName(tableName)
+            it.item(mapOf(
+                "id" to AttributeValue.fromS(post.id),
+                "title" to AttributeValue.fromS(post.title),
+                "content" to AttributeValue.fromS(post.content)
+            ))
+        }
+    }
 
-    fun save(post: Post): Unit = table.putItem(post)
+    fun get(id: String) = client.getItem {
+        it.tableName(tableName)
+        it.key(mapOf("id" to AttributeValue.fromS(id)))
+    }.item()?.toPost()
 
-    operator fun get(id: String): Post? = table.getItem(Key.builder().partitionValue(id).build())
-
-    fun delete(id: String): Post? = table.deleteItem(Key.builder().partitionValue(id).build())
+    fun delete(id: String) = client.deleteItem {
+        it.tableName(tableName)
+        it.key(mapOf("id" to AttributeValue.fromS(id)))
+        it.returnValues(ReturnValue.ALL_OLD)
+    }.attributes()?.toPost()
 }
 
+private fun Map<String, AttributeValue>.toPost() = Post(
+    id = get("id")!!.s(),
+    title = get("title")!!.s(),
+    content = get("content")!!.s()
+)

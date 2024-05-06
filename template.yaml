@@ -2,7 +2,7 @@ Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Runtime: java21
+    Runtime: provided.al2
     MemorySize: 2048
     Environment:
       Variables:
@@ -13,17 +13,15 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 13
-      Handler: dev.aohara.posts.LambdaHandler
-      Architectures: [arm64]
+      CodeUri: build/cake.zip
+      Handler: unused
+      Architectures: [x86_64]
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Posts
       Events:
         HttpApiEvent:
           Type: HttpApi
-#      SnapStart:
-#        ApplyOn: PublishedVersions
-#      AutoPublishAlias: SnapStart
 
   Posts:
     Type: AWS::DynamoDB::Table

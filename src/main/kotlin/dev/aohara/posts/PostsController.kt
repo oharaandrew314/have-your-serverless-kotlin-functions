@@ -22,13 +22,13 @@ val postDataLens = Jackson.autoBody<PostData>().toLens()
 
 fun postsController(posts: PostsRepo) = routes(
     "/posts/$postIdLens" bind GET to { request ->
-        posts[postIdLens(request)]
+        posts.get(postIdLens(request))
             ?.let { Response(OK).with(postLens of it) }
             ?: Response(NOT_FOUND)
     },
     "/posts/$postIdLens" bind DELETE to { request ->
         val postId = postIdLens(request)
-        posts[postId]
+        posts.delete(postId)
             ?.also { posts.delete(postId) }
             ?.let { Response(OK).with(postLens of it) }
             ?: Response(NOT_FOUND)
