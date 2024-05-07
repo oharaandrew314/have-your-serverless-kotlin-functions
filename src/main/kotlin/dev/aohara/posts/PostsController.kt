@@ -34,7 +34,7 @@ fun postsController(posts: PostsRepo) = routes(
             ?: Response(NOT_FOUND)
     },
     "/posts" bind GET to {
-        val results = posts.list()
+        val results = posts.primaryIndex().scan().toList()
         Response(OK).with(postListLens of results)
     },
     "/posts" bind POST to { request ->

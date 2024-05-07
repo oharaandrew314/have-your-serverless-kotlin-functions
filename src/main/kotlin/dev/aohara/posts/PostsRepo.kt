@@ -1,19 +1,16 @@
 package dev.aohara.posts
 
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
-import software.amazon.awssdk.enhanced.dynamodb.Key
-import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema
+import org.http4k.connect.amazon.dynamodb.DynamoDb
+import org.http4k.connect.amazon.dynamodb.mapper.DynamoDbTableMapper
+import org.http4k.connect.amazon.dynamodb.mapper.tableMapper
+import org.http4k.connect.amazon.dynamodb.model.Attribute
+import org.http4k.connect.amazon.dynamodb.model.TableName
+import org.http4k.format.Jackson
 
-class PostsRepo(dynamoDb: DynamoDbEnhancedClient, tableName: String) {
+typealias PostsRepo = DynamoDbTableMapper<Post, String, Unit>
 
-    private val table = dynamoDb.table(tableName, BeanTableSchema.create(Post::class.java))
-
-    fun list(): List<Post> = table.scan().flatMap { it.items() }
-
-    fun save(post: Post): Unit = table.putItem(post)
-
-    operator fun get(id: String): Post? = table.getItem(Key.builder().partitionValue(id).build())
-
-    fun delete(id: String): Post? = table.deleteItem(Key.builder().partitionValue(id).build())
-}
-
+fun postsRepo(dynamoDb: DynamoDb, tableName: String): PostsRepo = dynamoDb.tableMapper(
+    tableName = TableName.of(tableName),
+    hashKeyAttribute = Attribute.string().required("id"),
+    autoMarshalling = Jackson
+)
