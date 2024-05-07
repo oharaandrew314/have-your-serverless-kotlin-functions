@@ -7,7 +7,6 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.with
-import org.http4k.format.Jackson
 import org.http4k.lens.Path
 import org.http4k.lens.string
 import org.http4k.routing.bind
@@ -16,9 +15,9 @@ import java.util.UUID
 
 private val postIdLens = Path.string().of("post_id")
 
-val postLens = Jackson.autoBody<Post>().toLens()
-val postListLens = Jackson.autoBody<List<Post>>().toLens()
-val postDataLens = Jackson.autoBody<PostData>().toLens()
+val postLens = postsJson.autoBody<Post>().toLens()
+val postListLens = postsJson.autoBody<List<Post>>().toLens()
+val postDataLens = postsJson.autoBody<PostData>().toLens()
 
 fun postsController(posts: PostsRepo) = routes(
     "/posts/$postIdLens" bind GET to { request ->
