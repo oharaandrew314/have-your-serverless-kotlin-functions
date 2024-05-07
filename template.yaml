@@ -14,7 +14,6 @@ Resources:
     Properties:
       Timeout: 13
       Handler: dev.aohara.posts.LambdaHandler
-      CodeUri: build/libs/have_your_serverless_functions-all.jar
       Architectures: [arm64]
       Policies:
         - DynamoDBCrudPolicy:
@@ -22,8 +21,6 @@ Resources:
       Events:
         HttpApiEvent:
           Type: HttpApi
-    Metadata:
-      SkipBuild: true
 
   Posts:
     Type: AWS::DynamoDB::Table
