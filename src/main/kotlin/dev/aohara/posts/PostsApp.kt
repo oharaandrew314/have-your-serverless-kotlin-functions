@@ -1,5 +1,6 @@
 package dev.aohara.posts
 
+import org.http4k.client.Java8HttpClient
 import org.http4k.cloudnative.env.Environment
 import org.http4k.connect.amazon.dynamodb.DynamoDb
 import org.http4k.connect.amazon.dynamodb.Http
@@ -21,7 +22,7 @@ private val logFilter = Filter { next ->
 }
 
 fun createApp(envMap: Map<String, String>): HttpHandler {
-    val dynamo = DynamoDb.Http(Environment.from(envMap))
+    val dynamo = DynamoDb.Http(Environment.from(envMap), http = Java8HttpClient())
 
     val posts = postsRepo(
         dynamoDb = dynamo,
