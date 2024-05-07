@@ -7,7 +7,9 @@ import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 import org.http4k.serverless.ApiGatewayV2LambdaFunction
 import org.slf4j.LoggerFactory
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 private val logger = LoggerFactory.getLogger("root")
@@ -21,6 +23,8 @@ private val logFilter = Filter { next ->
 
 fun createApp(envMap: Map<String, String>): HttpHandler {
     val dynamo = DynamoDbClient.builder()
+        .httpClient(UrlConnectionHttpClient.create())
+        .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
         .build()
         .let { DynamoDbEnhancedClient.builder().dynamoDbClient(it).build() }
 
