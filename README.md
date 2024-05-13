@@ -6,7 +6,10 @@ A KotlinConf 2024 talk by @oharaandrew314
 
 ### Talk Materials
 
-See the [Slides](https://speakerdeck.com/oharaandrew314/have-your-serverless-kotlin-functions-and-eat-them-too)
+See the [Slides](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q)
+(as [PDF](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q/export?format=pdf),
+[PPTX](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q/export?format=pptx)),
+or on [SpeakerDeck](https://speakerdeck.com/oharaandrew314/have-your-serverless-kotlin-functions-and-eat-them-too))
 
 See the [Raw Data](https://docs.google.com/spreadsheets/d/1u9ss-tR0dwroMjrHDlyIodC7Ci3KQwW6OzfDs_N9DbA)
 
