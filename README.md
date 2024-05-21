@@ -1,10 +1,9 @@
 # Have your Serverless Kotlin Functions
 ## And Eat them Too
 
-A KotlinConf 2024 talk by @oharaandrew314
+A KotlinConf 2024 talk by Andrew O'Hara
 
-Links to socials and publications on [andrewohara.dev](https://andrewohara.dev)
-
+[Github Repo](https://github.com/oharaandrew314/have-your-serverless-kotlin-functions) | [andrewohara.dev](https://andrewohara.dev)
 
 ### Talk Materials
 
