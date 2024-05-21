@@ -3,6 +3,8 @@
 
 A KotlinConf 2024 talk by @oharaandrew314
 
+Links to socials and publications on [andrewohara.dev](https://andrewohara.dev)
+
 
 ### Talk Materials
 
