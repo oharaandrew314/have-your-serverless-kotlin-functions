@@ -7,12 +7,11 @@ A KotlinConf 2024 talk by Andrew O'Hara
 
 ### Talk Materials
 
-See the [Slides](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q)
-(as [PDF](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q/export?format=pdf),
-[PPTX](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q/export?format=pptx)),
-or on [SpeakerDeck](https://speakerdeck.com/oharaandrew314/have-your-serverless-kotlin-functions-and-eat-them-too))
+[Slides V1 (KotlinConf 2024)](https://docs.google.com/presentation/d/1TjKBs3sJdheyEI9C2M1GAaBeDxfhD3emaPRQgm9NB3Q)
 
-See the [Raw Data](https://docs.google.com/spreadsheets/d/1u9ss-tR0dwroMjrHDlyIodC7Ci3KQwW6OzfDs_N9DbA)
+[Slides V2 (Ottawa JUG)](https://docs.google.com/presentation/d/1fw_69sZ1T4DKoG76jDGeyMd5SNJ6cArCHykbL6NJbtM/edit?usp=sharing)
+
+[Raw Data](https://docs.google.com/spreadsheets/d/1u9ss-tR0dwroMjrHDlyIodC7Ci3KQwW6OzfDs_N9DbA)
 
 
 ### Stack Examples
